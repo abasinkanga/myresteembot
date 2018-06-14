@@ -1,4 +1,3 @@
-
 /**
  * https://steemit.com/@investigation
  */
@@ -123,10 +122,10 @@ function checkForNewTransactions() {
 
 			setLastHandledTransaction(index);
 		}
-*/
+
 		if (newItems > 0 && detectedTransactions === 0)
 			setLastHandledTransaction(lastIndex);
-	
+*/	
 }
 
 function parseAsTransaction(historyItem) {
@@ -161,7 +160,7 @@ function parseAsTransaction(historyItem) {
 	try {
 		var urlIndex = transaction.memo.indexOf(STEEMITURL);
 		if (urlIndex == -1) {
-			log(transaction.from + "'s memo is not a url link (" + transaction.memo + "). " + "This must be a donation. Thank you. " + "(We cannot make you any refunds)");
+			log(transaction.from + "'s memo is not a url link (" + transaction.memo + "). " + "This must be a donation. Thank you. " + "(We cannot make any refunds)");
 			return null;
 		}
 
@@ -184,7 +183,7 @@ function parseAsTransaction(historyItem) {
 	return transaction;
 }
 
-function setLastHandledTransaction(lastIndex) {
+/*function setLastHandledTransaction(lastIndex) {
 	lastHandledTransaction = lastIndex;
 	fs.writeFile(LAST_TRANSACTION_FILEPATH, JSON.stringify({ index: lastIndex }), function (err) {
 		if (err) {
@@ -194,7 +193,7 @@ function setLastHandledTransaction(lastIndex) {
 		}
 	});
 }
-
+*/
 /////////////
 
 function resteemAPostsInTheQueue(ownUser) {
@@ -225,6 +224,7 @@ function initUser(ownUser) {
 	};
 
 	log("Logged in!");
+  log("Listening for new transactions...");
 
 	if (user.wif === undefined)
 		throw new Error("'wif' is undefined");

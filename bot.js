@@ -1,10 +1,11 @@
+
 /**
  * https://steemit.com/@investigation
  */
 
 /////////////
 
-var botUserData = require("./userData.json")
+var botUserData = require("./userData.json");
 
 var SECOND = 1000;
 var MINUTE = 60 * SECOND;
@@ -30,7 +31,7 @@ var URL5 = "https://steemit.com/@smartcash";
 * See SmartCash on [coinmarketcap](` + URL4 + `)
 * Want to earn more SmartCash on steemit? [Visit @smartcash's profile](` + URL5 + `)`;
 */
-var RESTEEM_COMMENT = `Humble apologies for the multiple comments`;
+var RESTEEM_COMMENT = "Humble apologies for the multiple comments";
 
 /////////////
 
@@ -74,11 +75,11 @@ function checkShouldStop() { return !fs.existsSync("./DontStop"); }
 
 function checkForNewTransactions() {
 	if (checkShouldStop()) {
-		log("The 'DontStop' file is missing. The program is in ShutDown process.")
+		log("The 'DontStop' file is missing. The program is in ShutDown process.");
 		return; // don't handle more transactions, so that the ques will be empty.
 	}
 
-	steem.api.getAccountHistory(botUser.name, 99999999, 1000, function (err, accountHistory) {
+/*	steem.api.getAccountHistory(botUser.name, 99999999, 1000, function (err, accountHistory) {
 
 		if (err) { log(err); return; }
 		
@@ -98,9 +99,8 @@ function checkForNewTransactions() {
 			var index = accountHistory[i][1].timestamp 
 				+ "#" + accountHistory[i][1].block
 				+ "#" + accountHistory[i][0];
-			//if (index <= lastHandledTransaction) continue;
-			//else 
-			newItems++
+			if (index <= lastHandledTransaction) continue;
+			else newItems++
 
 			transaction = parseAsTransaction(accountHistory[i]);
 			if (transaction === null || transaction === undefined) {
@@ -123,10 +123,10 @@ function checkForNewTransactions() {
 
 			setLastHandledTransaction(index);
 		}
-
+*/
 		if (newItems > 0 && detectedTransactions === 0)
 			setLastHandledTransaction(lastIndex);
-	});
+	
 }
 
 function parseAsTransaction(historyItem) {
@@ -161,9 +161,7 @@ function parseAsTransaction(historyItem) {
 	try {
 		var urlIndex = transaction.memo.indexOf(STEEMITURL);
 		if (urlIndex == -1) {
-			log(transaction.from + "'s memo is not a url link (" + transaction.memo + "). "
-				+ "This must be a donation. Thank you. "
-				+ "(We cannot make you any refunds)");
+			log(transaction.from + "'s memo is not a url link (" + transaction.memo + "). " + "This must be a donation. Thank you. " + "(We cannot make you any refunds)");
 			return null;
 		}
 
@@ -172,7 +170,7 @@ function parseAsTransaction(historyItem) {
 		if (memo.indexOf("#") >= 0)
 			memo = memo.substring(0, memo.indexOf("#"));
 	
-		var authorAndPermlink = memo.substring(memo.indexOf('/@') + 2)
+		var authorAndPermlink = memo.substring(memo.indexOf('/@') + 2);
 		transaction.author = authorAndPermlink.split('/')[0];
 		transaction.permlink = authorAndPermlink.substring(transaction.author.length + 1);
 	}
@@ -182,7 +180,7 @@ function parseAsTransaction(historyItem) {
 		return null;
 	}
 
-	log(transactionString)
+	log(transactionString);
 	return transaction;
 }
 
@@ -203,7 +201,7 @@ function resteemAPostsInTheQueue(ownUser) {
 	if (resteemqueue.length < 1)
 		return;
 
-	var post = resteemqueue.shift();10
+	var post = resteemqueue.shift();
 	resteemPost(ownUser, post.author, post.permlink);
 }
 
@@ -228,7 +226,7 @@ function initUser(ownUser) {
 
 	log("Logged in!");
 
-	if (user.wif == undefined)
+	if (user.wif === undefined)
 		throw new Error("'wif' is undefined");
 
 	return user;
@@ -257,8 +255,7 @@ function resteemPost(ownUser, author, permlink) {
 			log('Successful re-steem: [' + author + '] ' + permlink);
 		} else {
 			var alreadyResteemed = err.message.indexOf("Account has already reblogged this post") > -1;
-			log('Failed to re-steem [' + author + '] : '
-				+ (alreadyResteemed ? "Account has already reblogged this post" : "Unknown Reason"));
+			log('Failed to re-steem [' + author + '] : ' + (alreadyResteemed ? "Account has already reblogged this post" : "Unknown Reason"));
 
 			if (!alreadyResteemed) 
 				log('Failed to re-steem [' + author + '] : ' + err);

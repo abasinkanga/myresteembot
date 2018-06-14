@@ -17,7 +17,7 @@ var URL3 = "https://wallet.smartcash.cc/";
 var URL4 = "https://coinmarketcap.com/currencies/smartcash/";
 var URL5 = "https://steemit.com/@smartcash";
 
-var RESTEEM_COMMENT = `@smartbot tip 1
+/*var RESTEEM_COMMENT = `@smartbot tip 1
 <center>Congratulations!!!<br>You will be rewarded 1 SMARTCASH for using this resteem service<br>
 <b>[ABASINKANGA RESTEEM SERVICE](` + URL2 + `)</b></center>
  - <b>This post just got resteemed to 6500 followers.</b>
@@ -29,6 +29,8 @@ var RESTEEM_COMMENT = `@smartbot tip 1
 * Get a smartcash wallet [here](` + URL3 + `) 
 * See SmartCash on [coinmarketcap](` + URL4 + `)
 * Want to earn more SmartCash on steemit? [Visit @smartcash's profile](` + URL5 + `)`;
+*/
+var RESTEEM_COMMENT = `Humble apologies for the multiple comments`;
 
 /////////////
 
@@ -96,8 +98,9 @@ function checkForNewTransactions() {
 			var index = accountHistory[i][1].timestamp 
 				+ "#" + accountHistory[i][1].block
 				+ "#" + accountHistory[i][0];
-			if (index <= lastHandledTransaction) continue;
-			else newItems++
+			//if (index <= lastHandledTransaction) continue;
+			//else 
+			newItems++
 
 			transaction = parseAsTransaction(accountHistory[i]);
 			if (transaction === null || transaction === undefined) {
@@ -158,9 +161,9 @@ function parseAsTransaction(historyItem) {
 	try {
 		var urlIndex = transaction.memo.indexOf(STEEMITURL);
 		if (urlIndex == -1) {
-			log(transaction.from + "'s memo doesn't contain a SteemIt link (" + transaction.memo + "). "
-				+ "The bot will assume that it was a donation. Thank you. "
-				+ "(If it was not a donation, feel free to contact me to settle the problem.)");
+			log(transaction.from + "'s memo is not a url link (" + transaction.memo + "). "
+				+ "This must be a donation. Thank you. "
+				+ "(We cannot make you any refunds)");
 			return null;
 		}
 

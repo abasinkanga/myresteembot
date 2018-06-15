@@ -78,7 +78,7 @@ function checkForNewTransactions() {
 		return; // don't handle more transactions, so that the ques will be empty.
 	}
 
-/*	steem.api.getAccountHistory(botUser.name, 99999999, 1000, function (err, accountHistory) {
+	steem.api.getAccountHistory(botUser.name, -1, 1, function (err, accountHistory)) {
 
 		if (err) { log(err); return; }
 		
@@ -125,7 +125,7 @@ function checkForNewTransactions() {
 
 		if (newItems > 0 && detectedTransactions === 0)
 			setLastHandledTransaction(lastIndex);
-*/	
+	
 }
 
 function parseAsTransaction(historyItem) {
@@ -183,7 +183,7 @@ function parseAsTransaction(historyItem) {
 	return transaction;
 }
 
-/*function setLastHandledTransaction(lastIndex) {
+function setLastHandledTransaction(lastIndex) {
 	lastHandledTransaction = lastIndex;
 	fs.writeFile(LAST_TRANSACTION_FILEPATH, JSON.stringify({ index: lastIndex }), function (err) {
 		if (err) {
@@ -193,7 +193,7 @@ function parseAsTransaction(historyItem) {
 		}
 	});
 }
-*/
+
 /////////////
 
 function resteemAPostsInTheQueue(ownUser) {

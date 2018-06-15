@@ -40,7 +40,7 @@ var steem = require('steem');
 // URL taken from: https://developers.steem.io/
 // If server is unreliable, select another URL
 //		or run own node (2GB needed) as described in the linked docs
-steem.api.setOptions({ url: 'https://api.steemit.com/' });
+steem.api.setOptions({ url: 'https://gtg.steem.house:8090/' });
 
 var STEEMITURL = "https://steemit.com/";
 var LAST_TRANSACTION_FILEPATH = "./lastHandledTransaction.json";
@@ -60,9 +60,9 @@ var commentqueue = [];
 
 /////////////
 
-setInterval(function () { checkForNewTransactions(); }, 10 * MINUTE);
+setInterval(function () { checkForNewTransactions(); }, 30 * SECOND);
 
-setInterval(function () { resteemAPostsInTheQueue(botUser); }, 10 * SECOND);
+setInterval(function () { resteemAPostsInTheQueue(botUser); }, 1 * SECOND);
 
 setInterval(function () { writeACommentInTheQueue(botUser); }, 40 * SECOND);
 
@@ -74,11 +74,11 @@ function checkShouldStop() { return !fs.existsSync("./DontStop"); }
 
 function checkForNewTransactions() {
 	if (checkShouldStop()) {
-		log("The 'DontStop' file is missing. The program is in ShutDown process.");
+		log("The 'DontStop' file is missing. The program is in ShutDown process.")
 		return; // don't handle more transactions, so that the ques will be empty.
 	}
 
-	steem.api.getAccountHistory(botUser.name, -1, 20, function (err, accountHistory) {
+	steem.api.getAccountHistory(botUser.name, 99999999, 1000, function (err, accountHistory) {
 
 		if (err) { log(err); return; }
 		
@@ -99,7 +99,7 @@ function checkForNewTransactions() {
 				+ "#" + accountHistory[i][1].block
 				+ "#" + accountHistory[i][0];
 			if (index <= lastHandledTransaction) continue;
-			else newItems++;
+			else newItems++
 
 			transaction = parseAsTransaction(accountHistory[i]);
 			if (transaction === null || transaction === undefined) {
@@ -115,17 +115,17 @@ function checkForNewTransactions() {
 			detectedTransactions++;
 
 			log("Transaction detected: " + transaction.from + 
-				" paid [" + transaction.amountStrFull + "] with memo " + transaction.memo);
+				" payed [" + transaction.amountStrFull + "] with memo " + transaction.memo);
 
 			resteemqueue.push({ author: transaction.author, permlink: transaction.permlink });
-			commentqueue.push({ author: transaction.author, permlink: transaction.permlink, body: RESTEEM_COMMENT });
+			
 
 			setLastHandledTransaction(index);
 		}
 
 		if (newItems > 0 && detectedTransactions === 0)
 			setLastHandledTransaction(lastIndex);
-	
+	});
 }
 
 function parseAsTransaction(historyItem) {
@@ -160,7 +160,9 @@ function parseAsTransaction(historyItem) {
 	try {
 		var urlIndex = transaction.memo.indexOf(STEEMITURL);
 		if (urlIndex == -1) {
-			log(transaction.from + "'s memo is not a url link (" + transaction.memo + "). " + "This must be a donation. Thank you. " + "(We cannot make any refunds)");
+			log(transaction.from + "'s memo doesn't contain a SteemIt link (" + transaction.memo + "). "
+				+ "The bot will assume that it was a donation. Thank you. "
+				+ "(If it was not a donation, feel free to contact me to settle the problem.)");
 			return null;
 		}
 
@@ -169,7 +171,7 @@ function parseAsTransaction(historyItem) {
 		if (memo.indexOf("#") >= 0)
 			memo = memo.substring(0, memo.indexOf("#"));
 	
-		var authorAndPermlink = memo.substring(memo.indexOf('/@') + 2);
+		var authorAndPermlink = memo.substring(memo.indexOf('/@') + 2)
 		transaction.author = authorAndPermlink.split('/')[0];
 		transaction.permlink = authorAndPermlink.substring(transaction.author.length + 1);
 	}
@@ -179,7 +181,7 @@ function parseAsTransaction(historyItem) {
 		return null;
 	}
 
-	log(transactionString);
+	log(transactionString)
 	return transaction;
 }
 
@@ -200,12 +202,12 @@ function resteemAPostsInTheQueue(ownUser) {
 	if (resteemqueue.length < 1)
 		return;
 
-	var post = resteemqueue.shift();
+	var post = resteemqueue.shift();10
 	resteemPost(ownUser, post.author, post.permlink);
 }
 
 function writeACommentInTheQueue(ownUser) {
-	if (commentqueue.length < 1 && !alreadyResteemed)
+	if (commentqueue.length < 1)
 		return;
 
 	var post = commentqueue.shift();
@@ -224,9 +226,8 @@ function initUser(ownUser) {
 	};
 
 	log("Logged in!");
-  log("Listening for new transactions...");
 
-	if (user.wif === undefined)
+	if (user.wif == undefined)
 		throw new Error("'wif' is undefined");
 
 	return user;
@@ -253,9 +254,11 @@ function resteemPost(ownUser, author, permlink) {
 	steem.broadcast.customJson(ownUser.wif, [], [ownUser.name], 'follow', json, (err, result) => {
 		if (!err && result) {
 			log('Successful re-steem: [' + author + '] ' + permlink);
+			commentqueue.push({ author: transaction.author, permlink: transaction.permlink, body: RESTEEM_COMMENT });
 		} else {
 			var alreadyResteemed = err.message.indexOf("Account has already reblogged this post") > -1;
-			log('Failed to re-steem [' + author + '] : ' + (alreadyResteemed ? "Account has already reblogged this post" : "Unknown Reason"));
+			log('Failed to re-steem [' + author + '] : '
+				+ (alreadyResteemed ? "Account has already reblogged this post" : "Unknown Reason"));
 
 			if (!alreadyResteemed) 
 				log('Failed to re-steem [' + author + '] : ' + err);

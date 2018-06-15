@@ -78,7 +78,7 @@ function checkForNewTransactions() {
 		return; // don't handle more transactions, so that the ques will be empty.
 	}
 
-	steem.api.getAccountHistory(botUser.name, -1, 1, function (err, accountHistory)) {
+	steem.api.getAccountHistory(botUser.name, -1, 20, function (err, accountHistory) {
 
 		if (err) { log(err); return; }
 		
@@ -99,7 +99,7 @@ function checkForNewTransactions() {
 				+ "#" + accountHistory[i][1].block
 				+ "#" + accountHistory[i][0];
 			if (index <= lastHandledTransaction) continue;
-			else newItems++
+			else newItems++;
 
 			transaction = parseAsTransaction(accountHistory[i]);
 			if (transaction === null || transaction === undefined) {
@@ -205,7 +205,7 @@ function resteemAPostsInTheQueue(ownUser) {
 }
 
 function writeACommentInTheQueue(ownUser) {
-	if (commentqueue.length < 1)
+	if (commentqueue.length < 1 && !alreadyResteemed)
 		return;
 
 	var post = commentqueue.shift();

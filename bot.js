@@ -17,20 +17,19 @@ var URL3 = "https://wallet.smartcash.cc/";
 var URL4 = "https://coinmarketcap.com/currencies/smartcash/";
 var URL5 = "https://steemit.com/@smartcash";
 
-/*var RESTEEM_COMMENT = `@smartbot tip 1
-<center>Congratulations!!!<br>You will be rewarded 1 SMARTCASH for using this resteem service<br>
+var RESTEEM_COMMENT = `<center>Congratulations!!!<br>You will be rewarded 1 SMARTCASH for using this resteem service<br>
 <b>[ABASINKANGA RESTEEM SERVICE](` + URL2 + `)</b></center>
- - <b>This post just got resteemed to 6500 followers.</b>
+ - <b>This post just got resteemed to 7000 followers.</b>
  - <b>For anyone to use my resteem service, send 0.1 SBD to @` + botUserData.name + ` + post link as memo.</b>
- - <b>[Earn SmartCash rewards](` + URL1 + `) when you send SBD to resteem your post</b>
+ - <b>[Earn SmartCash rewards](` + URL1 + `) when you resteem your post</b>
  - <sub><b>Tip with SMARTCASH</b> or <b>Upvote</b> this comment if you appreciate this service.</sub>
 <h4>How To Use SmartCash?</h4>
 * For menu commands, reply with comment: @smartbot help
 * Get a smartcash wallet [here](` + URL3 + `) 
 * See SmartCash on [coinmarketcap](` + URL4 + `)
 * Want to earn more SmartCash on steemit? [Visit @smartcash's profile](` + URL5 + `)`;
-*/
-var RESTEEM_COMMENT = "Humble apologies for the multiple comments";
+
+//var RESTEEM_COMMENT = "Humble apologies for the multiple comments";
 
 /////////////
 
@@ -40,7 +39,7 @@ var steem = require('steem');
 // URL taken from: https://developers.steem.io/
 // If server is unreliable, select another URL
 //		or run own node (2GB needed) as described in the linked docs
-steem.api.setOptions({ url: 'https://gtg.steem.house:8090/' });
+steem.api.setOptions({ url: 'https://api.steemit.com/' });
 
 var STEEMITURL = "https://steemit.com/";
 var LAST_TRANSACTION_FILEPATH = "./lastHandledTransaction.json";
@@ -60,9 +59,9 @@ var commentqueue = [];
 
 /////////////
 
-setInterval(function () { checkForNewTransactions(); }, 30 * SECOND);
+setInterval(function () { checkForNewTransactions(); }, 10 * MINUTE);
 
-setInterval(function () { resteemAPostsInTheQueue(botUser); }, 1 * SECOND);
+setInterval(function () { resteemAPostsInTheQueue(botUser); }, 5 * SECOND);
 
 setInterval(function () { writeACommentInTheQueue(botUser); }, 40 * SECOND);
 
@@ -118,7 +117,7 @@ function checkForNewTransactions() {
 				" payed [" + transaction.amountStrFull + "] with memo " + transaction.memo);
 
 			resteemqueue.push({ author: transaction.author, permlink: transaction.permlink });
-			
+			commentqueue.push({ author: transaction.author, permlink: transaction.permlink, body: RESTEEM_COMMENT });
 
 			setLastHandledTransaction(index);
 		}
@@ -253,8 +252,7 @@ function resteemPost(ownUser, author, permlink) {
 
 	steem.broadcast.customJson(ownUser.wif, [], [ownUser.name], 'follow', json, (err, result) => {
 		if (!err && result) {
-			log('Successful re-steem: [' + author + '] ' + permlink);
-			commentqueue.push({ author: transaction.author, permlink: transaction.permlink, body: RESTEEM_COMMENT });
+			log('Successful re-steem: [' + author + '] ' + permlink);			
 		} else {
 			var alreadyResteemed = err.message.indexOf("Account has already reblogged this post") > -1;
 			log('Failed to re-steem [' + author + '] : '

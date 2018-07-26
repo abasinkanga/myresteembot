@@ -13,10 +13,11 @@ var MUST_FOLLOW_SINCE = 7 * MINUTE;
 
 var URL1 = "https://steemit.com/smartcash/@abasinkanga/hot-news-the-resteem-service-that-rewards-you-back-see-how-it-works-you-get-a-reward-when-i-resteem-your-post";
 var URL2 = "https://www.steemit.com/@abasinkanga";
-var URL3 = "https://wallet.smartcash.cc/";
+var URL3 = "https://discord.gg/CV652Fy";
 var URL4 = "https://coinmarketcap.com/currencies/smartcash/";
 var URL5 = "https://steemit.com/@smartcash";
 
+/*
 var RESTEEM_COMMENT = `<center>Congratulations!!!<br>You will be rewarded 1 SMARTCASH for using this resteem service<br>
 <b>[ABASINKANGA RESTEEM SERVICE](` + URL2 + `)</b></center>
  - <b>This post just got resteemed to 7000 followers.</b>
@@ -28,8 +29,11 @@ var RESTEEM_COMMENT = `<center>Congratulations!!!<br>You will be rewarded 1 SMAR
 * Get a smartcash wallet [here](` + URL3 + `) 
 * See SmartCash on [coinmarketcap](` + URL4 + `)
 * Want to earn more SmartCash on steemit? [Visit @smartcash's profile](` + URL5 + `)`;
+*/
 
 //var RESTEEM_COMMENT = "Humble apologies for the multiple comments";
+
+var RESTEEM_COMMENT =<b>Your post has been resteemed. Thank you for using my resteem service<br>Join my [discord server](` + URL3 + `) for free resteems</b>;
 
 /////////////
 

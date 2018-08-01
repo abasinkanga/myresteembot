@@ -236,7 +236,7 @@ function initUser(ownUser) {
 
 	return user;
 }
-
+/*
 function createComment(ownUser, author, permlink, body) {
 	var commentPermlink = steem.formatter.commentPermlink(author, permlink);
 	steem.broadcast.comment(ownUser.wif, author, permlink, ownUser.name, commentPermlink, "", body, "", function (err, result) {
@@ -244,6 +244,33 @@ function createComment(ownUser, author, permlink, body) {
 			log('Successful comment: [' + author + '] ' + permlink);
 		} else {
 			log('Failed to create comment: ' + err);
+		}
+	});
+}
+*/
+function createComment(ownUser, author, permlink, body) {
+	log("Commenting on /@" + author + "/" + permlink);
+	steem.api.getContentReplies(author, permlink, function (err, replies) {
+		if(err) {
+		   log("Failed to get replies of /@" + author + "/" + permlink)
+		   log(err);
+		   return;
+		}
+	   
+		var matchingReplies = replies.filter(r=> r.author == ownUser.name).filter(r=> r.body == body);
+		if(matchingReplies.length > 0) {
+			log("Bot has already commented (" + matchingReplies.length + " times) on this post /@" + author + "/" + permlink);
+		}
+		else {
+			log("Writing comment...")
+			var commentPermlink = steem.formatter.commentPermlink(author, permlink);
+			steem.broadcast.comment(ownUser.wif, author, permlink, ownUser.name, commentPermlink, "", body, "", function (err, result) {
+				if (!err && result) {
+					log('Successful comment: [' + author + '] ' + permlink);
+				} else {
+					log('Failed to create comment: ' + err);
+				}
+			});
 		}
 	});
 }

@@ -33,7 +33,7 @@ var RESTEEM_COMMENT = `<center>Congratulations!!!<br>You will be rewarded 1 SMAR
 
 //var RESTEEM_COMMENT = "Humble apologies for the multiple comments";
 
-var RESTEEM_COMMENT = `<b>@smartbot tip 1</b><br>
+var RESTEEM_COMMENT = `@smartbot tip 1<br>
 <b>Your post has been resteemed. Thanks for using my resteem service</b>
 <b>Get more rewards in my [discord server](` + URL3 + `)</b>`;
 

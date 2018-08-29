@@ -54,7 +54,7 @@ var botUser = initUser(botUserData);
 
 var lastHandledTransaction = require(LAST_TRANSACTION_FILEPATH).index;
 
-var RESTEEM_PRICE = 0.05;
+var RESTEEM_PRICE = 0.1;
 
 var resteemqueue = [];
 var commentqueue = [];

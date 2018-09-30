@@ -65,6 +65,10 @@ var commentqueue = [];
 
 /////////////
 
+getLatestBlock();
+setInterval(function () { getLatestBlock(); }, 10000);
+
+
 setInterval(function () { checkForNewTransactions(); }, 10 * MINUTE);
 
 setInterval(function () { resteemAPostsInTheQueue(botUser); }, 5 * SECOND);
@@ -74,6 +78,13 @@ setInterval(function () { writeACommentInTheQueue(botUser); }, 40 * SECOND);
 setInterval(function () { log("------------- [1 HOUR PASSED] -------------"); }, 1 * HOUR);
 
 /////////////
+
+function getLatestBlock() {
+	steem.api.getState("", function (err, data) {
+		if (err) { log(err); return; }
+		last_irreversible_block_num = data.props.last_irreversible_block_num - 20;
+	});
+}
 
 function checkShouldStop() { return !fs.existsSync("./DontStop"); }
 
